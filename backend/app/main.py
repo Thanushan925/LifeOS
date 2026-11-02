@@ -3,11 +3,15 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.routers.auth import router as auth_router
+
 app = FastAPI(
     title="LifeOS API",
     description="Personal planning and scheduling assistant",
     version="0.1.0",
 )
+
+app.include_router(auth_router)
 
 allowed_origins = [
     origin.strip()
@@ -21,6 +25,7 @@ allowed_origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["Content-Type", "Authorization"],
 )
