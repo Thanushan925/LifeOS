@@ -41,3 +41,10 @@ export function logout(): Promise<void> {
     method: 'POST',
   })
 }
+
+export function updateProfile(displayName: string): Promise<User> {
+  return request<User>('/settings/profile', {
+    method: 'PATCH',
+    body: JSON.stringify({ display_name: displayName }),
+  })
+}

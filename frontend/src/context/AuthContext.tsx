@@ -4,6 +4,7 @@ import {
   login as loginRequest,
   logout as logoutRequest,
   register as registerRequest,
+  updateProfile as updateProfileRequest,
   type LoginData,
   type RegisterData,
   type User,
@@ -83,8 +84,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
+  const updateProfile = async (displayName: string) => {
+    revision.current += 1
+    const updatedUser = await updateProfileRequest(displayName)
+    revision.current += 1
+    setUser(updatedUser)
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, sessionError, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, sessionError, login, register, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   )

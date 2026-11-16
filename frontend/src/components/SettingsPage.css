@@ -1,0 +1,55 @@
+.settings-page { padding: 36px 0; }
+.settings-heading { margin-bottom: 32px; }
+.settings-heading h1 { margin: 10px 0; font-size: clamp(30px, 4vw, 42px); letter-spacing: -1.4px; }
+.settings-heading > p:last-child { color: var(--muted); font-size: 14px; }
+.settings-layout { display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: start; gap: 28px; }
+.settings-navigation { position: sticky; top: 24px; display: grid; gap: 6px; }
+.settings-nav-item { min-height: 42px; padding: 10px 12px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); text-align: left; font-size: 13px; cursor: pointer; }
+.settings-nav-item.active { background: var(--soft); color: var(--link); border-color: var(--border); font-weight: 650; }
+.settings-content { min-width: 0; }
+.settings-section-intro { margin-bottom: 24px; }
+.settings-section-intro h2 { margin: 0 0 10px; font-size: 23px; letter-spacing: -.5px; }
+.settings-section-intro p, .settings-help { color: var(--muted); font-size: 13px; line-height: 1.7; }
+.settings-section-intro p { margin: 0; }
+.settings-form { display: grid; gap: 22px; }
+.settings-form .settings-section-intro { margin-bottom: 0; }
+.settings-card { display: grid; gap: 20px; min-width: 0; margin: 0; padding: 24px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.settings-card legend { padding: 0 8px; color: var(--text); font-size: 16px; font-weight: 650; }
+.settings-card h3 { margin: 0; font-size: 16px; }
+.settings-card > p { margin: 0; }
+.settings-form label { display: flex; flex-direction: column; gap: 8px; color: var(--text); font-size: 13px; font-weight: 600; }
+.settings-form small { color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.6; }
+.settings-form input:not([type="checkbox"]), .settings-form select { width: 100%; min-width: 0; min-height: 42px; padding: 10px 12px; border: 1px solid var(--input-border); border-radius: 7px; background: var(--surface); color: var(--text); }
+.settings-form input[readonly] { color: var(--muted); background: var(--soft); }
+.settings-form select:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.settings-field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.input-with-unit { display: flex; align-items: center; gap: 10px; }
+.input-with-unit input { max-width: 100px; }
+.input-with-unit span { color: var(--muted); font-size: 12px; font-weight: 400; }
+.settings-narrow { max-width: 430px; }
+.sleep-schedule { display: grid; gap: 12px; }
+.sleep-row { display: grid; grid-template-columns: minmax(125px, 1fr) repeat(2, minmax(0, 1fr)); align-items: center; gap: 16px; padding: 16px; border: 1px solid var(--border); border-radius: 9px; }
+.sleep-day { display: grid; gap: 6px; font-size: 13px; }
+.sleep-day span { color: var(--muted); font-size: 12px; }
+.focus-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.settings-form .focus-choice { display: flex; flex-direction: row; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--input-border); border-radius: 9px; cursor: pointer; }
+.focus-choice:has(input:checked) { background: var(--soft); border-color: var(--link); }
+.focus-choice input { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--accent); }
+.focus-choice span { display: grid; gap: 3px; }
+.settings-advice { padding: 12px; border-radius: 7px; background: var(--warning-bg); color: var(--warning); font-size: 12px; }
+.settings-save-bar { position: sticky; bottom: 16px; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: 0 8px 30px var(--shadow); }
+.settings-save-bar p { margin: 0; }
+.settings-success { color: var(--success); font-size: 13px; }
+.settings-card > .secondary-button { justify-self: start; }
+@media (max-width: 1100px) {
+  .settings-layout { grid-template-columns: 1fr; }
+  .settings-navigation { position: static; display: flex; flex-wrap: wrap; gap: 6px; }
+}
+@media (max-width: 650px) {
+  .settings-page { padding-top: 28px; }
+  .settings-card { padding: 18px; }
+  .settings-field-grid, .focus-options { grid-template-columns: 1fr; }
+  .sleep-row { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 12px; }
+  .sleep-day { grid-column: 1 / -1; }
+  .settings-save-bar { position: static; }
+}

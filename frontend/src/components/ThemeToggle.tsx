@@ -17,9 +17,12 @@ export function ThemeToggle() {
     }
     media.addEventListener('change', syncPreference)
     window.addEventListener('storage', onStorage)
+    const syncTheme = () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
+    window.addEventListener('lifeos:theme-change', syncTheme)
     return () => {
       media.removeEventListener('change', syncPreference)
       window.removeEventListener('storage', onStorage)
+      window.removeEventListener('lifeos:theme-change', syncTheme)
     }
   }, [])
 
@@ -28,6 +31,7 @@ export function ThemeToggle() {
     document.documentElement.dataset.theme = next
     setTheme(next)
     try { localStorage.setItem('lifeos-theme', next) } catch { /* Still works for this visit. */ }
+    window.dispatchEvent(new Event('lifeos:theme-change'))
   }
 
   return (

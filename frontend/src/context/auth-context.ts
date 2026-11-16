@@ -8,6 +8,7 @@ export type AuthContextType = {
   login: (data: LoginData) => Promise<void>
   register: (data: RegisterData) => Promise<void>
   logout: () => Promise<void>
+  updateProfile: (displayName: string) => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(

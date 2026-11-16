@@ -4,6 +4,7 @@ import { useAuth } from './context/useAuth'
 import { AuthPage } from './components/AuthPage'
 import { TasksPanel } from './components/TasksPanel'
 import { ThemeToggle } from './components/ThemeToggle'
+import { SettingsPage } from './components/SettingsPage'
 
 type ApiStatus = 'checking' | 'connected' | 'disconnected'
 
@@ -31,6 +32,23 @@ function Dashboard() {
   const { user, logout, sessionError } = useAuth()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [logoutError, setLogoutError] = useState('')
+  const [locationHash, setLocationHash] = useState(window.location.hash)
+  const [settingsDirty, setSettingsDirty] = useState(false)
+  const showSettings = locationHash === '#settings'
+
+  useEffect(() => {
+    const changed = () => setLocationHash(window.location.hash)
+    window.addEventListener('hashchange', changed)
+    return () => window.removeEventListener('hashchange', changed)
+  }, [])
+
+  const confirmLeaveSettings = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (showSettings && settingsDirty && event.currentTarget.hash !== '#settings') {
+      if (!window.confirm('Leave settings and discard unsaved changes?')) event.preventDefault()
+      else setSettingsDirty(false)
+    }
+  }
+
 
   const signOut = async () => {
     if (isLoggingOut) return
@@ -67,7 +85,7 @@ function Dashboard() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <a className="brand" href="/">
+        <a className="brand" href="/" onClick={confirmLeaveSettings}>
           <span className="brand-icon">L</span>
           <span>LifeOS</span>
         </a>
@@ -82,11 +100,17 @@ function Dashboard() {
         </div>
         <p className="nav-label">WORKSPACE</p>
 
-        <nav className="navigation">
-          <a className="nav-item active" href="#dashboard">
+        <nav className="navigation" onClick={(event) => {
+          const link = (event.target as HTMLElement).closest('a')
+          if (link && showSettings && settingsDirty && link.hash !== '#settings') {
+            if (!window.confirm('Leave settings and discard unsaved changes?')) event.preventDefault()
+            else setSettingsDirty(false)
+          }
+        }}>
+          <a className={`nav-item ${!showSettings && locationHash !== '#tasks' ? 'active' : ''}`} href="#dashboard">
             <span>◫</span> Dashboard
           </a>
-          <a className="nav-item" href="#tasks">
+          <a className={`nav-item ${locationHash === '#tasks' ? 'active' : ''}`} href="#tasks">
             <span>☷</span> Tasks
           </a>
           <a className="nav-item" href="#calendar">
@@ -94,6 +118,9 @@ function Dashboard() {
           </a>
           <a className="nav-item" href="#planning">
             <span>✧</span> AI Planning
+          </a>
+          <a className={`nav-item ${showSettings ? 'active' : ''}`} href="#settings">
+            <span aria-hidden="true">⚙</span> Settings
           </a>
         </nav>
 
@@ -126,6 +153,7 @@ function Dashboard() {
         </header>
 
         {sessionError && <p className="auth-error" role="alert">{sessionError}</p>}
+        {showSettings ? <SettingsPage onDirtyChange={setSettingsDirty} /> : <>
         <section className="welcome">
           <p className="eyebrow">YOUR SPACE. YOUR PRIORITIES.</p>
           <h1>Make room for what matters.</h1>
@@ -190,6 +218,8 @@ function Dashboard() {
             <span className="coming-soon">PLANNING ENGINE IN DEVELOPMENT</span>
           </div>
         </section>
+
+        </>}
 
         <footer className="app-footer">
           LifeOS <span>·</span> Built for intentional living
