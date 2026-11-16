@@ -27,6 +27,20 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 COOKIE_NAME = "lifeos_access_token"
 
 
+def set_session_cookie(response: Response, user: User) -> None:
+    access_token = create_access_token(str(user.id))
+
+    response.set_cookie(
+        key=COOKIE_NAME,
+        value=access_token,
+        httponly=True,
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
+        max_age=settings.access_token_expire_minutes * 60,
+        path="/",
+    )
+
+
 def get_current_user(
     access_token: str | None = Cookie(
         default=None,
@@ -71,6 +85,7 @@ def get_current_user(
 )
 def register_user(
     user_data: UserCreate,
+    response: Response,
     db: Session = Depends(get_db),
 ):
     email = str(user_data.email).strip().lower()
@@ -103,6 +118,7 @@ def register_user(
             detail="An account with this email already exists.",
         )
 
+    set_session_cookie(response, user)
     return user
 
 
@@ -128,18 +144,7 @@ def login_user(
             detail="Incorrect email or password.",
         )
 
-    access_token = create_access_token(str(user.id))
-
-    response.set_cookie(
-        key=COOKIE_NAME,
-        value=access_token,
-        httponly=True,
-        secure=settings.cookie_secure,
-        samesite=settings.cookie_samesite,
-        max_age=settings.access_token_expire_minutes * 60,
-        path="/",
-    )
-
+    set_session_cookie(response, user)
     return user
 
 

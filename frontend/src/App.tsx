@@ -1,9 +1,48 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { useAuth } from './context/useAuth'
+import { AuthPage } from './components/AuthPage'
+import { TasksPanel } from './components/TasksPanel'
 
 type ApiStatus = 'checking' | 'connected' | 'disconnected'
 
 function App() {
+  const { user, isLoading, sessionError } = useAuth()
+
+  if (isLoading) {
+    return <main className="auth-shell"><p role="status">Checking your session…</p></main>
+  }
+  if (sessionError && !user) {
+    return (
+      <main className="auth-shell">
+        <section className="auth-card">
+          <h1>Unable to connect</h1>
+          <p role="alert">{sessionError}</p>
+          <button className="primary-button" onClick={() => window.location.reload()}>Try again</button>
+        </section>
+      </main>
+    )
+  }
+  return user ? <Dashboard key={user.id} /> : <AuthPage />
+}
+
+function Dashboard() {
+  const { user, logout, sessionError } = useAuth()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [logoutError, setLogoutError] = useState('')
+
+  const signOut = async () => {
+    if (isLoggingOut) return
+    setIsLoggingOut(true)
+    setLogoutError('')
+    try {
+      await logout()
+    } catch (error) {
+      setLogoutError(error instanceof Error ? error.message : 'Unable to sign out. Try again.')
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
   const [apiStatus, setApiStatus] = useState<ApiStatus>('checking')
 
   useEffect(() => {
@@ -32,6 +71,14 @@ function App() {
           <span>LifeOS</span>
         </a>
 
+        <div className="account-panel">
+          <strong>{user?.display_name}</strong>
+          <span>{user?.email}</span>
+          <button className="text-button" type="button" disabled={isLoggingOut} onClick={() => void signOut()}>
+            {isLoggingOut ? 'Signing out…' : 'Sign out'}
+          </button>
+          {logoutError && <p className="auth-error" role="alert">{logoutError}</p>}
+        </div>
         <p className="nav-label">WORKSPACE</p>
 
         <nav className="navigation">
@@ -74,6 +121,7 @@ function App() {
           </span>
         </header>
 
+        {sessionError && <p className="auth-error" role="alert">{sessionError}</p>}
         <section className="welcome">
           <p className="eyebrow">YOUR SPACE. YOUR PRIORITIES.</p>
           <h1>Make room for what matters.</h1>
@@ -98,7 +146,7 @@ function App() {
           <article className="overview-card">
             <span className="card-icon">☷</span>
             <p className="card-label">Tasks</p>
-            <h3>Coming soon</h3>
+            <h3><a className="text-button" href="#tasks">Manage your tasks →</a></h3>
             <p className="card-description">
               Capture and prioritize what needs to get done.
             </p>
@@ -122,6 +170,8 @@ function App() {
             </p>
           </article>
         </section>
+
+        <TasksPanel />
 
         <section className="focus-panel" id="planning">
           <div className="focus-symbol">✧</div>
