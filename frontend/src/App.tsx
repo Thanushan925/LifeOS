@@ -3,6 +3,7 @@ import './App.css'
 import { useAuth } from './context/useAuth'
 import { AuthPage } from './components/AuthPage'
 import { TasksPanel } from './components/TasksPanel'
+import { ThemeToggle } from './components/ThemeToggle'
 
 type ApiStatus = 'checking' | 'connected' | 'disconnected'
 
@@ -112,6 +113,7 @@ function Dashboard() {
       <main className="main-content" id="dashboard">
         <header className="topbar">
           <span className="eyebrow">PERSONAL OPERATING SYSTEM</span>
+          <div className="topbar-actions">
           <span className="date-label">
             {new Date().toLocaleDateString(undefined, {
               weekday: 'short',
@@ -119,6 +121,8 @@ function Dashboard() {
               day: 'numeric',
             })}
           </span>
+          <ThemeToggle />
+          </div>
         </header>
 
         {sessionError && <p className="auth-error" role="alert">{sessionError}</p>}

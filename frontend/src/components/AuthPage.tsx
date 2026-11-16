@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useAuth } from '../context/useAuth'
+import { ThemeToggle } from './ThemeToggle'
 
 export function AuthPage() {
   const { login, register } = useAuth()
@@ -41,9 +42,12 @@ export function AuthPage() {
   return (
     <main className="auth-shell">
       <section className="auth-card" aria-labelledby="auth-title">
+        <div className="auth-header">
         <a className="brand" href="/">
           <span className="brand-icon">L</span><span>LifeOS</span>
         </a>
+        <ThemeToggle />
+        </div>
         <p className="eyebrow">YOUR SPACE. YOUR PRIORITIES.</p>
         <h1 id="auth-title">{isRegister ? 'Make room for what matters.' : 'Welcome back.'}</h1>
         <p className="auth-copy">
